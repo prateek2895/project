@@ -1,0 +1,71 @@
+Project Details:
+
+aws elastic ip
+aws vpc:
+	network block: 172.16.0.0/16
+		public VPC subnet: 172.16.10.0/24
+		private VPC subnet: 172.16.20.0/24
+
+ec2 ubuntu server 20.04 - 3 machines
+	web1
+	web2
+	splunk
+
+web1, web2:
+	install nodejs v16
+	start web server at 3000
+
+	npm packages used:
+		winston - for loggin in nodejs
+
+
+	install splunk universal forwarder
+	send info.lo, auth.log, syslog, fail2ban.log to splunk server at port 9997
+
+splunk server:
+	install splunk server
+	open listening port on 9997 port
+	splunk web GUI at port 8000
+
+	install Local tunnel to access splunk webgui
+	install nodejs to install local tunnel
+	open tunnel: "#lt --port 8000"
+
+Loadbalancer:
+	AWS ELB(Elastic load balancer) - type = classic load balancer
+	load balanced web1 and web2
+
+	demo using "LOIC" : LOW ORBIT ION CANNON : is an open source network stress tool, written in C#.
+
+aws Route 53:
+	to map "editiss.tk" to our load balancer "domain"	
+
+iptable:
+	on web1 and web2
+	only allowd port 22 and 3000
+	all other incoming blocked
+
+fail2ban:
+	sudo apt install fail2ban
+	installed on web1, web2, splunk
+	to ban ip which is bruteforcing on ssh
+	imp files:
+		/etc/fail2ban/fail2ban.conf
+		/etc/fail2ban/jail.conf
+
+	ban time: 2 minutes
+	reset ban time: every 2 min
+	number of failed attemts: 3 fail attempts			
+
+Important ports:
+	webserver: 3000
+	web servr using "editiss.tk" : 80 (http)
+	splunk server web-gui: 8000
+	splunk server listen on : 9997
+	
+SSL certs:
+	XCA tool
+	key algorithm: RSA 4096
+	rootCA cert: Editiss-root-CA.cert
+	subCA cert: Editiss-sub-CA.cert		
+	website cert: www.editiss.tk.cert.pem
