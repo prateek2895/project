@@ -1,0 +1,13 @@
+#!/bin/bash
+
+sudo iptables -F
+
+sudo iptables -P INPUT DROP
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+sudo iptables -A INPUT -p tcp -m multiport --dports 22,3000 -j ACCEPT
+
+sudo iptables -P OUTPUT ACCEPT
+sudo iptables -P FORWARD DROP
+
+sudo iptables -L -v
